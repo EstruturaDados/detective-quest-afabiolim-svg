@@ -15,3 +15,10 @@ Sala* criarSala(const char *nome) {
     s->esq = s->dir = NULL;
     return s;
 }
+
+// Estrutura: Pista
+typedef struct Pista {
+    char *texto;
+    struct Pista *esq;
+    struct Pista *dir;
+} Pista;
