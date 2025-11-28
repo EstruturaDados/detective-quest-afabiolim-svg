@@ -99,3 +99,18 @@ Suspeito* inserirSuspeito(const char *nome) {
     tabelaHash[h] = s;
     return s;
 }
+
+void associarPistaASuspeito(const char *suspeitoNome, const char *textoPista) {
+    Suspeito *s = inserirSuspeito(suspeitoNome);
+    // verificar se pista já foi associada a esse suspeito (simples check)
+    SuspeitoPista *iter = s->pistas;
+    while (iter) {
+        if (strcmp(iter->textoPista, textoPista) == 0) return; // já associada
+        iter = iter->prox;
+    }
+    SuspeitoPista *np = (SuspeitoPista*) malloc(sizeof(SuspeitoPista));
+    np->textoPista = strdup(textoPista);
+    np->prox = s->pistas;
+    s->pistas = np;
+    s->contador += 1;
+}
