@@ -53,3 +53,4 @@ void liberarPistas(Pista *root) {
     free(root->texto);
     free(root);
 }
+
