@@ -29,3 +29,27 @@ Pista* criarPistaNode(const char *texto) {
     p->esq = p->dir = NULL;
     return p;
 }
+
+Pista* inserirPistaBST(Pista *root, const char *texto) {
+    if (!root) return criarPistaNode(texto);
+    int cmp = strcmp(texto, root->texto);
+    if (cmp < 0) root->esq = inserirPistaBST(root->esq, texto);
+    else if (cmp > 0) root->dir = inserirPistaBST(root->dir, texto);
+    // se igual, não insere duplicata
+    return root;
+}
+
+void listarPistasEmOrdem(Pista *root) {
+    if (!root) return;
+    listarPistasEmOrdem(root->esq);
+    printf(" - %s\n", root->texto);
+    listarPistasEmOrdem(root->dir);
+}
+
+void liberarPistas(Pista *root) {
+    if (!root) return;
+    liberarPistas(root->esq);
+    liberarPistas(root->dir);
+    free(root->texto);
+    free(root);
+}
