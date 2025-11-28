@@ -66,3 +66,5 @@ typedef struct Suspeito {
     int contador; // quantas pistas associadas (para probabilidade)
     struct Suspeito *prox; // para lista encadeada da tabela (colisões)
 } Suspeito;
+
+#define HASH_SIZE 13
