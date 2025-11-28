@@ -76,3 +76,13 @@ int hashFunc(const char *s) {
     for (const char *p = s; *p; ++p) sum += (unsigned char)(*p);
     return sum % HASH_SIZE;
 }
+
+Suspeito* buscarSuspeito(const char *nome) {
+    int h = hashFunc(nome);
+    Suspeito *cur = tabelaHash[h];
+    while (cur) {
+        if (strcmp(cur->nome, nome) == 0) return cur;
+        cur = cur->prox;
+    }
+    return NULL;
+}
