@@ -54,3 +54,15 @@ void liberarPistas(Pista *root) {
     free(root);
 }
 
+// Estrutura: Suspeito + tabela hash
+typedef struct SuspeitoPista {
+    char *textoPista;
+    struct SuspeitoPista *prox;
+} SuspeitoPista;
+
+typedef struct Suspeito {
+    char *nome;
+    SuspeitoPista *pistas;
+    int contador; // quantas pistas associadas (para probabilidade)
+    struct Suspeito *prox; // para lista encadeada da tabela (colisões)
+} Suspeito;
