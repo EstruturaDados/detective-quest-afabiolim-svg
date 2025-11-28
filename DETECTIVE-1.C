@@ -22,3 +22,10 @@ typedef struct Pista {
     struct Pista *esq;
     struct Pista *dir;
 } Pista;
+
+Pista* criarPistaNode(const char *texto) {
+    Pista *p = (Pista*) malloc(sizeof(Pista));
+    p->texto = strdup(texto);
+    p->esq = p->dir = NULL;
+    return p;
+}
