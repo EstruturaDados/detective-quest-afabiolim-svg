@@ -86,3 +86,16 @@ Suspeito* buscarSuspeito(const char *nome) {
     }
     return NULL;
 }
+
+Suspeito* inserirSuspeito(const char *nome) {
+    Suspeito *exist = buscarSuspeito(nome);
+    if (exist) return exist;
+    int h = hashFunc(nome);
+    Suspeito *s = (Suspeito*) malloc(sizeof(Suspeito));
+    s->nome = strdup(nome);
+    s->pistas = NULL;
+    s->contador = 0;
+    s->prox = tabelaHash[h];
+    tabelaHash[h] = s;
+    return s;
+}
