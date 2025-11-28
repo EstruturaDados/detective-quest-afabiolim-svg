@@ -68,3 +68,11 @@ typedef struct Suspeito {
 } Suspeito;
 
 #define HASH_SIZE 13
+
+Suspeito* tabelaHash[HASH_SIZE];
+
+int hashFunc(const char *s) {
+    int sum = 0;
+    for (const char *p = s; *p; ++p) sum += (unsigned char)(*p);
+    return sum % HASH_SIZE;
+}
