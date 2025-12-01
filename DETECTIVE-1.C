@@ -189,3 +189,36 @@ Sala* montarMapa() {
     return hall;
 }
 
+// Função para, ao entrar numa sala
+void aoEntrarNaSala(const char *nomeSala, Pista **rootPistas) {
+    if (strcmp(nomeSala, "Biblioteca") == 0) {
+        const char *p = "Livro de receitas marcado na pagina 42";
+        *rootPistas = inserirPistaBST(*rootPistas, p);
+        associarPistaASuspeito("Sr. Martins", p);
+    } else if (strcmp(nomeSala, "Cozinha") == 0) {
+        const char *p = "Panelas limpas com cheiro de perfume floral";
+        *rootPistas = inserirPistaBST(*rootPistas, p);
+        associarPistaASuspeito("Sra. Oliveira", p);
+        associarPistaASuspeito("Sr. Martins", p); // ambos relacionados
+    } else if (strcmp(nomeSala, "Sotao") == 0) {
+        const char *p = "Pegadas pequeninas no poeira";
+        *rootPistas = inserirPistaBST(*rootPistas, p);
+        associarPistaASuspeito("Criança desconhecida", p);
+    } else if (strcmp(nomeSala, "Porao") == 0) {
+        const char *p = "Carta rasgada com iniciais 'R.O.'";
+        *rootPistas = inserirPistaBST(*rootPistas, p);
+        associarPistaASuspeito("Rafael Oliveira", p);
+    } else if (strcmp(nomeSala, "Escritorio") == 0) {
+        const char *p = "Assinatura faltando na folha de ponto";
+        *rootPistas = inserirPistaBST(*rootPistas, p);
+        associarPistaASuspeito("Sra. Oliveira", p);
+    } else if (strcmp(nomeSala, "Jardim") == 0) {
+        const char *p = "Rastro de terra molhada levando ao portao";
+        *rootPistas = inserirPistaBST(*rootPistas, p);
+        associarPistaASuspeito("Zelador", p);
+    } else if (strcmp(nomeSala, "Hall de Entrada") == 0) {
+        const char *p = "Relogio parado as 9:15";
+        *rootPistas = inserirPistaBST(*rootPistas, p);
+        // essa pista não aponta para suspeito direto
+    }
+}
