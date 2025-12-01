@@ -16,7 +16,8 @@ Sala* criarSala(const char *nome) {
     return s;
 }
 
-// Estrutura: Pista
+
+// Estrutura: Pista (BST)
 typedef struct Pista {
     char *texto;
     struct Pista *esq;
@@ -54,6 +55,7 @@ void liberarPistas(Pista *root) {
     free(root);
 }
 
+
 // Estrutura: Suspeito + tabela hash
 typedef struct SuspeitoPista {
     char *textoPista;
@@ -75,6 +77,10 @@ int hashFunc(const char *s) {
     int sum = 0;
     for (const char *p = s; *p; ++p) sum += (unsigned char)(*p);
     return sum % HASH_SIZE;
+}
+
+void inicializarHash() {
+    for (int i = 0; i < HASH_SIZE; ++i) tabelaHash[i] = NULL;
 }
 
 Suspeito* buscarSuspeito(const char *nome) {
@@ -113,4 +119,32 @@ void associarPistaASuspeito(const char *suspeitoNome, const char *textoPista) {
     np->prox = s->pistas;
     s->pistas = np;
     s->contador += 1;
+}
+
+void listarSuspeitos() {
+    printf("\nSuspeitos e pistas associadas:\n");
+    for (int i = 0; i < HASH_SIZE; ++i) {
+        Suspeito *cur = tabelaHash[i];
+        while (cur) {
+            printf(" * %s (pistas: %d)\n", cur->nome, cur->contador);
+            SuspeitoPista *sp = cur->pistas;
+            while (sp) {
+                printf("    - %s\n", sp->textoPista);
+                sp = sp->prox;
+            }
+            cur = cur->prox;
+        }
+    }
+}
+
+Suspeito* suspeitoMaisProvavel() {
+    Suspeito *best = NULL;
+    for (int i = 0; i < HASH_SIZE; ++i) {
+        Suspeito *cur = tabelaHash[i];
+        while (cur) {
+            if (!best || cur->contador > best->contador) best = cur;
+            cur = cur->prox;
+        }
+    }
+    return best;
 }
