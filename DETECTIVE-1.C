@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 // Estrutura: Sala (árvore binária)
 typedef struct Sala {
     char *nome;
@@ -55,7 +56,6 @@ void liberarPistas(Pista *root) {
     free(root);
 }
 
-
 // Estrutura: Suspeito + tabela hash
 typedef struct SuspeitoPista {
     char *textoPista;
@@ -65,8 +65,8 @@ typedef struct SuspeitoPista {
 typedef struct Suspeito {
     char *nome;
     SuspeitoPista *pistas;
-    int contador; // quantas pistas associadas (para probabilidade)
-    struct Suspeito *prox; // para lista encadeada da tabela (colisões)
+    int contador; // quantas pistas associadas
+    struct Suspeito *prox; // para lista encadeada da tabela
 } Suspeito;
 
 #define HASH_SIZE 13
@@ -221,4 +221,86 @@ void aoEntrarNaSala(const char *nomeSala, Pista **rootPistas) {
         *rootPistas = inserirPistaBST(*rootPistas, p);
         // essa pista não aponta para suspeito direto
     }
+}
+
+// Exploração: permite ir 'e' esquerda, 'd' direita, 's' sair, 'r' revisar pistas, 'u' ver suspeitos
+void explorarSalas(Sala *atual, Pista **rootPistas) {
+    Sala *pos = atual;
+    char comando[16];
+    while (1) {
+        printf("\nVoce esta na sala: %s\n", pos->nome);
+        aoEntrarNaSala(pos->nome, rootPistas);
+        printf("Comandos: (e) esquerda, (d) direita, (v) voltar ao Hall, (r) revisar pistas, (u) ver suspeitos, (s) sair\n");
+        printf("Digite comando: ");
+        if (!fgets(comando, sizeof(comando), stdin)) break;
+        // trim
+        comando[strcspn(comando, "\n")] = 0;
+        if (strcmp(comando, "e") == 0) {
+            if (pos->esq) pos = pos->esq;
+            else printf("Nao ha sala a esquerda.\n");
+        } else if (strcmp(comando, "d") == 0) {
+            if (pos->dir) pos = pos->dir;
+            else printf("Nao ha sala a direita.\n");
+        } else if (strcmp(comando, "v") == 0) {
+            // voltar ao Hall: assume raiz global
+            printf("Voltando ao Hall de Entrada.\n");
+            // Aqui, simplesmente nota-se que normalmente passaríamos root; para manter simples, não implementamos subir - usuário pode usar sair e reiniciar.
+            printf("Para voltar ao Hall, digite 's' para sair e reentrar no jogo.\n");
+        } else if (strcmp(comando, "r") == 0) {
+            printf("\n--- Pistas coletadas (em ordem) ---\n");
+            if (*rootPistas) listarPistasEmOrdem(*rootPistas);
+            else printf("Nenhuma pista coletada ainda.\n");
+        } else if (strcmp(comando, "u") == 0) {
+            listarSuspeitos();
+        } else if (strcmp(comando, "s") == 0) {
+            printf("Saindo da exploracao...\n");
+            return;
+        } else {
+            printf("Comando desconhecido.\n");
+        }
+    }
+}
+
+
+
+// Utilitarios de liberacao e main
+void liberarMapa(Sala *root) {
+    if (!root) return;
+    liberarMapa(root->esq);
+    liberarMapa(root->dir);
+    free(root->nome);
+    free(root);
+}
+
+int main() {
+    printf("=== Detective Quest - Estruturas: Arvore + BST + Hash ===\n\n");
+    // inicializa estruturas
+    inicializarHash();
+    Sala *mapa = montarMapa();
+    Pista *rootPistas = NULL;
+
+    // Explorar a partir do Hall de Entrada
+    explorarSalas(mapa, &rootPistas);
+
+    // Ao final, mostrar resumo das evidencias
+    printf("\n=== Resumo final ===\n");
+    printf("\nPistas coletadas (ordem alfabetica):\n");
+    if (rootPistas) listarPistasEmOrdem(rootPistas);
+    else printf("Nenhuma pista coletada.\n");
+
+    listarSuspeitos();
+    Suspeito *mais = suspeitoMaisProvavel();
+    if (mais) {
+        printf("\nSuspeito mais provavel: %s (mencoes: %d)\n", mais->nome, mais->contador);
+    } else {
+        printf("\nNenhum suspeito identificado.\n");
+    }
+
+    // liberar memoria
+    liberarPistas(rootPistas);
+    liberarHash();
+    liberarMapa(mapa);
+
+    printf("\nObrigado por jogar! (Programa finalizado)\n");
+    return 0;
 }
