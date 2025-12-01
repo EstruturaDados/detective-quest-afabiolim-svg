@@ -148,3 +148,44 @@ Suspeito* suspeitoMaisProvavel() {
     }
     return best;
 }
+
+void liberarHash() {
+    for (int i = 0; i < HASH_SIZE; ++i) {
+        Suspeito *cur = tabelaHash[i];
+        while (cur) {
+            SuspeitoPista *sp = cur->pistas;
+            while (sp) {
+                SuspeitoPista *tmp = sp;
+                sp = sp->prox;
+                free(tmp->textoPista);
+                free(tmp);
+            }
+            Suspeito *tmpS = cur;
+            cur = cur->prox;
+            free(tmpS->nome);
+            free(tmpS);
+        }
+        tabelaHash[i] = NULL;
+    }
+}
+
+// Functions para mapa / exploração
+Sala* montarMapa() {
+    // Construção fixa: Hall raiz, Esquerda: Biblioteca -> Sótão, Direita: Cozinha -> Porão
+    Sala *hall = criarSala("Hall de Entrada");
+    Sala *bibli = criarSala("Biblioteca");
+    Sala *cozinha = criarSala("Cozinha");
+    Sala *sotao = criarSala("Sotao");
+    Sala *porao = criarSala("Porao");
+    Sala *escritorio = criarSala("Escritorio");
+    Sala *jardim = criarSala("Jardim");
+    // conectando (árvore simples)
+    hall->esq = bibli;
+    hall->dir = cozinha;
+    bibli->esq = sotao;
+    bibli->dir = escritorio;
+    cozinha->esq = porao;
+    cozinha->dir = jardim;
+    return hall;
+}
+
